@@ -1,18 +1,18 @@
 exports.module = {
     todos: async (_, args, { pool }) => {
-        let sql = `SELECT * FROM todos`;
+        let sql = `SELECT * FROM todos order by createdAt desc`;
         const data = await pool.then((par) => par.query(sql));
 
         const { done } = args;
         let result = [...data];
- 
+
         if (done !== undefined) {
             result = result.filter((item) => item.done == done);
         }
         const count = result.length;
 
         const { onPage, page } = args;
-        result = result.splice(onPage * (page - 1), onPage);
+        result = result.splice(onPage * (page ), onPage);
         return {
             data: result,
             count,
