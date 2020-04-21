@@ -1,0 +1,23 @@
+type Query {
+    todos(done: Boolean, page: Int = 1, onPage: Int = 5): TodoList
+    todo(id: Int!): Todo
+}
+
+type Mutation {
+    createTodo(title: String!): Boolean!
+    updateTodo(id: Int!, title: String, done: Boolean): Boolean!
+    deleteTodo(id: Int!): Boolean!
+}
+
+# Schema Types
+type Todo {
+    id: Int!
+    title: String!
+    done: Boolean!
+    createdAt: String
+}
+
+type TodoList {
+    data: [Todo!]!
+    count: Int,
+}
