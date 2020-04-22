@@ -7,8 +7,10 @@ import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { ApolloProvider } from "@apollo/react-hooks";
 import fetch from "node-fetch";
 
+console.log(process.env.RAZZLE_API_URL);
+
 const client = new ApolloClient({
-    link: new HttpLink({ uri: "http://localhost:4000/", fetch }),
+    link: new HttpLink({ uri: process.env.RAZZLE_API_URL, fetch }),
     cache: new InMemoryCache(),
 });
 
@@ -20,7 +22,6 @@ server
     .disable("x-powered-by")
     .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
     .get("/*", (req, res) => {
-
         const context = {};
         const markup = renderToString(
             <ApolloProvider client={client}>
