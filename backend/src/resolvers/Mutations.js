@@ -29,6 +29,8 @@ exports.module = {
     deleteTodo: async (_, args, { pool }) => {
         const { id } = args;
         let sql = `DELETE FROM todos where id=?`;
+
+        
         const data = await pool.then((par) => par.query(sql, id));
 
         if (!data) {
