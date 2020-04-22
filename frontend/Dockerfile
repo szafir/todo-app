@@ -5,7 +5,8 @@ WORKDIR /app
 
 COPY . /app
 RUN yarn install
+RUN yarn build
 
 EXPOSE 4000
 
-CMD ["yarn", "start"]
+CMD ["yarn", "start:prod"]

@@ -4,7 +4,7 @@ const mysql = require("promise-mysql");
 
 var pool = mysql.createPool({
     connectionLimit: 5,
-    host: "localhost",
+    host: "db",
     user: "root",
     password: "root",
     database: "todoapp",
@@ -12,7 +12,6 @@ var pool = mysql.createPool({
 const context = {
     pool,
 };
-
 const server = new GraphQLServer({
     typeDefs: `${__dirname}/schema.graphql`,
     resolvers,
