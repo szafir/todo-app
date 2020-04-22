@@ -14,19 +14,19 @@ services:
         restart: always
         ports:
             - 8080:8080
-    # api:
-    #     build: ./backend
-    #     volumes:
-    #         - ./backend:/app
-    #     command: ./start.sh
-    #     ports:
-    #         - 4000:4000
-    # frontend:
-    #     build: ./frontend
-    #     volumes:
-    #         - ./frontend:/app
-    #     command: ./start.sh
-    #     ports:
-    #         - 3000:3000
-    #         - 3001:3001
+    api:
+        build: ./backend
+        volumes:
+            - ./backend:/app
+        command: ./start.sh
+        ports:
+            - 4000:4000
+    frontend:
+        build: ./frontend
+        volumes:
+            - ./frontend:/app
+        command: ./start.sh
+        ports:
+            - 3000:3000
+            - 3001:3001
 
