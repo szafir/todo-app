@@ -1,24 +1,19 @@
 exports.module = {
     todos: async (_, args, { pool }) => {
-        let sql = `SELECT * FROM todos order by createdAt desc`;
-        const data = await pool.then((par) => par.query(sql));
-
-        const { done } = args;
-        let result = [...data];
-
-        if (done !== undefined) {
-            result = result.filter((item) => item.done == done);
-        }
-        const count = result.length;
+        const countSql = `SELECT count(*) as count FROM todos`;
+        const countData = await pool.then((par) => par.query(countSql));
+        const { count } = countData[0];
 
         const { onPage, page } = args;
-        result = result.splice(onPage * (page ), onPage);
+        const sql = `SELECT * FROM todos order by createdAt desc limit ?,?`;
+        const data = await pool.then((par) => par.query(sql, [onPage * page, onPage]));
+        
         return {
-            data: result,
+            data: [...data],
             count,
         };
     },
-    todo: async (_, args, { pool }) => {
+    todo: async (_, args, { pool }) => {s
         const { id } = args;
         let sql = `SELECT * FROM todos where id=?`;
         const res = await pool

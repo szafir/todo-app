@@ -1,5 +1,5 @@
 type Query {
-    todos(done: Boolean, page: Int = 1, onPage: Int = 5): TodoList
+    todos(done: Boolean, page: Int = 0, onPage: Int = 5): TodoList
     todo(id: Int!): Todo
 }
 

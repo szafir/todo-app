@@ -1,4 +1,3 @@
-
 exports.module = {
     createTodo: async (_, args, { pool }) => {
         const { title } = args;
@@ -30,7 +29,6 @@ exports.module = {
         const { id } = args;
         let sql = `DELETE FROM todos where id=?`;
 
-        
         const data = await pool.then((par) => par.query(sql, id));
 
         if (!data) {
