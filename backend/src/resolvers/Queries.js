@@ -8,7 +8,6 @@ const todos = async (_, args, { pool }) => {
     const data = await pool.then((par) =>
         par.query(sql, [onPage * page, onPage])
     );
-
     return {
         data: [...data],
         count,
@@ -20,7 +19,6 @@ const todo = async (_, args, { pool }) => {
     const res = await pool
         .then((par) => par.query(sql, id))
         .then((results) => results[0]);
-
     return res;
 };
 export default {

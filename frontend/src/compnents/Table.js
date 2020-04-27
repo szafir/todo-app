@@ -38,6 +38,7 @@ export default ({ items, newMode, setNewMode, count }) => {
                 id,
                 done: !done,
             },
+
             refetchQueries: [{ query: TODOS, variables: { page } }],
         });
     };
@@ -61,7 +62,7 @@ export default ({ items, newMode, setNewMode, count }) => {
         if (editModeId === -1) {
             createTodo({
                 variables: {
-                    title: editModeText,
+                    title: editModeText,    
                 },
                 refetchQueries: [{ query: TODOS, variables: { page } }],
             });
@@ -72,7 +73,6 @@ export default ({ items, newMode, setNewMode, count }) => {
                     id: editModeId,
                     title: editModeText,
                 },
-                refetchQueries: [{ query: TODOS, variables: { page } }],
             });
         }
         setEditModeId(0);

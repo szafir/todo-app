@@ -5,7 +5,7 @@ type Query {
 
 type Mutation {
     createTodo(title: String!): Boolean!
-    updateTodo(id: Int!, title: String, done: Boolean): Boolean!
+    updateTodo(id: Int!, title: String, done: Boolean): Todo
     deleteTodo(id: Int!): Boolean!
 }
 
@@ -19,5 +19,5 @@ type Todo {
 
 type TodoList {
     data: [Todo!]!
-    count: Int,
+    count: Int
 }

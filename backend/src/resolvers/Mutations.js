@@ -16,11 +16,17 @@ const updateTodo = async (_, args, { pool }) => {
         return false;
     }
 
-    const { done = item.done, title = item.title } = args;
+    const { done = item.done, title = item.title, createdAt } = args;
 
     const stmt = `UPDATE todos SET title=?, done=? where id=?`;
-    const data = await pool.then((conn) => conn.query(stmt, [title, done, id]));
-    return data.affectedRows === 1;
+    await pool.then((conn) => conn.query(stmt, [title, done, id]));
+
+    return {
+        id,
+        title,
+        done,
+        createdAt: item.createdAt,
+    };
 };
 const deleteTodo = async (_, args, { pool }) => {
     const { id } = args;
