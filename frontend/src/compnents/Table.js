@@ -38,8 +38,6 @@ export default ({ items, newMode, setNewMode, count }) => {
                 id,
                 done: !done,
             },
-
-            refetchQueries: [{ query: TODOS, variables: { page } }],
         });
     };
 

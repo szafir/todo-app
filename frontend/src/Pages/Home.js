@@ -61,7 +61,6 @@ export default () => {
                         variant="contained"
                         color="primary"
                         onClick={handleNewMode}
-                        role="button"
                     >
                         Create TODO
                     </Button>
