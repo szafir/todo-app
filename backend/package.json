@@ -1,7 +1,7 @@
 {
     "scripts": {
-        "start": "node src/index.js",
-        "dev": "nodemon src/index.js"
+        "start": "PRODUCTION=true babel-node src/index.js",
+        "dev": "nodemon --exec babel-node src/index.js"
     },
     "dependencies": {
         "dotenv": "^8.2.0",
@@ -14,6 +14,9 @@
     "version": "1.0.0",
     "main": "src/index.js",
     "devDependencies": {
+        "@babel/core": "^7.9.0",
+        "@babel/node": "^7.8.7",
+        "@babel/preset-env": "^7.9.5",
         "nodemon": "^2.0.3"
     },
     "author": "Kamil Szafranek",
