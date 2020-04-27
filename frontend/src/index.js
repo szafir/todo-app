@@ -1,6 +1,5 @@
 import http from "http";
-
-let app = require("./server").default;
+import app from "./server";
 
 const server = http.createServer(app);
 

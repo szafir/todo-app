@@ -5,6 +5,7 @@ import { TODOS } from "./queries";
 import { MockedProvider } from "@apollo/react-testing";
 import { mount, configure } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+
 configure({ adapter: new Adapter() });
 
 const mocks = [

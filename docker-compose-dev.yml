@@ -9,7 +9,7 @@ services:
             - 3306:3306
         environment:
             MYSQL_ROOT_PASSWORD: root
-    adminer:
+    adminer: #tool for DB management
         image: adminer
         restart: always
         ports:
@@ -29,4 +29,3 @@ services:
         ports:
             - 3000:3000
             - 3001:3001
-
