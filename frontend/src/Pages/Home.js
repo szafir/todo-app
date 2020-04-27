@@ -61,8 +61,9 @@ export default () => {
                         variant="contained"
                         color="primary"
                         onClick={handleNewMode}
+                        role="button"
                     >
-                        Add TODO
+                        Create TODO
                     </Button>
                 </div>
                 <Table

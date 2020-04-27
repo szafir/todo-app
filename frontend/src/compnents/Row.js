@@ -12,6 +12,11 @@ const useStyles = makeStyles({
     itemDone: {
         textDecoration: "line-through",
     },
+    itemLabel: {
+        minWidth: 100,
+
+        height: 20,
+    },
 });
 
 export default ({
@@ -39,14 +44,17 @@ export default ({
 
     return (
         <TableRow>
-            <TableCell component="th" scope="row" width="15">
+            <TableCell scope="row" width="15">
                 <Checkbox
                     defaultChecked={row.done}
                     color="primary"
                     onClick={() => handleDone(row.id, row.done)}
                 />
             </TableCell>
-            <TableCell component="th" scope="row">
+            <TableCell
+                scope="row"
+                onClick={() => handleEditMode(row.id, row.title)}
+            >
                 {editModeId === row.id && (
                     <TextField
                         autoFocus
@@ -54,17 +62,22 @@ export default ({
                         value={editModeText}
                         variant="outlined"
                         size="small"
+                        fullWidth
+                        multiline
                         onChange={handleEditModeTextChange}
                         onKeyDown={handleEditModeTextKeyDown}
                         onBlur={handleEditModeTextBlur}
                     />
                 )}
-                <label
-                    className={row.done ? classes.itemDone : null}
-                    onClick={() => handleEditMode(row.id, row.title)}
-                >
-                    {editModeId !== row.id && row.title}
-                </label>
+                {editModeId !== row.id && (
+                    <label
+                        className={`${classes.itemLabel} ${
+                            row.done ? classes.itemDone : ""
+                        }`}
+                    >
+                        {row.title}
+                    </label>
+                )}
             </TableCell>
 
             <TableCell align="right" width="90">
@@ -74,6 +87,7 @@ export default ({
                         color="secondary"
                         variant="contained"
                         onClick={() => handleDelete(row.id)}
+                        role="button"
                     >
                         Delete
                     </Button>

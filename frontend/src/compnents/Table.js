@@ -43,6 +43,9 @@ export default ({ items, newMode, setNewMode, count }) => {
     };
 
     const handleEditMode = (id, text) => {
+        if (editModeId === id) {
+            return;
+        }
         setEditModeId(id);
         setEditModeText(text);
     };
@@ -79,7 +82,7 @@ export default ({ items, newMode, setNewMode, count }) => {
     useEffect(() => {
         setEditModeId(-1);
     }, [newMode]);
-    
+
     return (
         <TableContainer component={Paper}>
             <Table className={classes.table}>
