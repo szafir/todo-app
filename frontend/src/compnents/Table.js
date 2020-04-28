@@ -6,27 +6,12 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { useHistory } from "react-router-dom";
-import queryString from "query-string";
 import { useMutation } from "@apollo/react-hooks";
 import { TODOS, UPDATE_TODO, CREATE_TODO } from "../queries";
 import Footer from "./Footer";
 import Row from "./Row";
 
-const useStyles = makeStyles({
-    table: {
-        minWidth: 500,
-    },
-});
-
-export default ({ items, newMode, setNewMode, count }) => {
-    const rowsPerPage = 5;
-
-    const classes = useStyles();
-    const history = useHistory();
-    let { page = 0 } = queryString.parse(history.location.search);
-    page = parseInt(page, 10);
-
+export default ({ items, newMode, setNewMode, count, onPage }) => {
     const [updateTodo] = useMutation(UPDATE_TODO);
     const [createTodo] = useMutation(CREATE_TODO);
     const [editModeId, setEditModeId] = useState(0);
@@ -60,9 +45,29 @@ export default ({ items, newMode, setNewMode, count }) => {
         if (editModeId === -1) {
             createTodo({
                 variables: {
-                    title: editModeText,    
+                    title: editModeText,
                 },
-                refetchQueries: [{ query: TODOS, variables: { page } }],
+                update: (cache, result) => {
+                    const { todos } = cache.readQuery({
+                        query: TODOS,
+                        variables: {
+                            first: onPage,
+                        },
+                    });
+
+                    cache.writeQuery({
+                        query: TODOS,
+                        data: {
+                            todos: {
+                                count: todos.count + 1,
+                                data: [result.data.createTodo, ...todos.data],
+                            },
+                        },
+                        variables: {
+                            first: onPage,
+                        },
+                    });
+                },
             });
             setNewMode(false);
         } else {
@@ -83,12 +88,12 @@ export default ({ items, newMode, setNewMode, count }) => {
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table}>
+            <Table>
                 <TableBody>
                     {newMode && (
                         <Row
                             row={{ done: false, id: -1 }}
-                            page={page}
+                            onPage={onPage}
                             editModeId={editModeId}
                             editModeText={editModeText}
                             handleDone={handleDone}
@@ -103,7 +108,7 @@ export default ({ items, newMode, setNewMode, count }) => {
                     {items.map((row) => (
                         <Row
                             row={row}
-                            page={page}
+                            onPage={onPage}
                             key={`${row.id}-${row.title}`}
                             editModeId={editModeId}
                             editModeText={editModeText}
@@ -118,18 +123,12 @@ export default ({ items, newMode, setNewMode, count }) => {
                     ))}
 
                     {count === 0 && !newMode && (
-                        <TableRow>
+                        <TableRow key="no-items">
                             <TableCell colSpan={6}>No items</TableCell>
                         </TableRow>
                     )}
                 </TableBody>
-                {count > rowsPerPage && (
-                    <Footer
-                        count={count}
-                        page={page}
-                        rowsPerPage={rowsPerPage}
-                    />
-                )}
+                <Footer count={count} itemsAmount={items.length} />
             </Table>
         </TableContainer>
     );

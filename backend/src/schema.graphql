@@ -1,10 +1,10 @@
 type Query {
-    todos(done: Boolean, page: Int = 0, onPage: Int = 5): TodoList
+    todos(filter: String, first: Int = 10, skip: Int = 0): TodoList
     todo(id: Int!): Todo
 }
 
 type Mutation {
-    createTodo(title: String!): Boolean!
+    createTodo(title: String!): Todo
     updateTodo(id: Int!, title: String, done: Boolean): Todo
     deleteTodo(id: Int!): Boolean!
 }

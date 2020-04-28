@@ -2,7 +2,17 @@ const createTodo = async (_, args, { pool }) => {
     const { title } = args;
     const stmt = `INSERT INTO todos(title) VALUES(?)`;
     const data = await pool.then((conn) => conn.query(stmt, title));
-    return data.affectedRows === 1;
+    // console.log(data.insertId);
+    const sql = `SELECT * FROM todos where id=?`;
+    const item = await pool
+        .then((par) => par.query(sql, data.insertId))
+        .then((results) => results[0]);
+
+    if (!item) {
+        return false;
+    }
+
+    return item;
 };
 const updateTodo = async (_, args, { pool }) => {
     const { id } = args;

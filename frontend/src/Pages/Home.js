@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -7,8 +7,6 @@ import Button from "@material-ui/core/Button";
 import Table from "../compnents/Table";
 import Container from "@material-ui/core/Container";
 import { useQuery } from "@apollo/react-hooks";
-import { useHistory } from "react-router-dom";
-import queryString from "query-string";
 import { TODOS } from "../queries";
 
 const useStyles = makeStyles((theme) => ({
@@ -30,19 +28,48 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const onPage = 5;
+
 export default () => {
     const classes = useStyles();
-    const history = useHistory();
-    const { page = 0 } = queryString.parse(history.location.search);
+    const [cursor, setCursor] = useState(0);
 
-    const { data } = useQuery(TODOS, {
-        variables: { page: parseInt(page, 10) },
-        fetchPolicy: "network-only",
+    const { data, fetchMore } = useQuery(TODOS, {
+        variables: { first: onPage },
     });
 
     const [newMode, setNewMode] = useState(false);
     const handleNewMode = () => {
         setNewMode(true);
+    };
+
+    useEffect(() => {
+        if (cursor > 0) {
+            fetchMore({
+                variables: {
+                    first: onPage,
+                    skip: data.todos.data.length,
+                },
+                updateQuery: (prevResult, { fetchMoreResult }) => {
+                    if (!fetchMoreResult) return prevResult;
+                    const newResult = {
+                        todos: {
+                            count: fetchMoreResult.todos.count,
+                            data: [
+                                ...prevResult.todos.data,
+                                ...fetchMoreResult.todos.data,
+                            ],
+                        },
+                    };
+
+                    return newResult;
+                },
+            });
+        }
+    }, [cursor]);
+
+    const handleLoadMore = () => {
+        setCursor(cursor + 1);
     };
     return (
         <>
@@ -65,12 +92,23 @@ export default () => {
                         Create TODO
                     </Button>
                 </div>
+
                 <Table
                     items={(data && data.todos && data.todos.data) || []}
                     newMode={newMode}
                     setNewMode={setNewMode}
+                    onPage={onPage}
                     count={(data && data.todos && data.todos.count) || 0}
                 />
+                <div className={classes.tableHeader}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleLoadMore}
+                    >
+                        Load more
+                    </Button>
+                </div>
             </Container>
         </>
     );

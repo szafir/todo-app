@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
@@ -21,7 +21,6 @@ const useStyles = makeStyles({
 
 export default ({
     row,
-    page,
     editModeId,
     editModeText,
     handleDone,
@@ -29,6 +28,7 @@ export default ({
     handleEditModeTextChange,
     handleEditModeTextKeyDown,
     handleEditModeTextBlur,
+    onPage,
 }) => {
     const classes = useStyles();
     const [deleteTodo] = useMutation(DELETE_TODO);
@@ -38,7 +38,31 @@ export default ({
             variables: {
                 id,
             },
-            refetchQueries: [{ query: TODOS, variables: { page } }],
+            update: (cache, response) => {
+                if (!response.data.deleteTodo) {
+                    return;
+                }
+
+                const { todos } = cache.readQuery({
+                    query: TODOS,
+                    variables: {
+                        first: onPage,
+                    },
+                });
+
+                cache.writeQuery({
+                    query: TODOS,
+                    data: {
+                        todos: {
+                            count: todos.count - 1,
+                            data: todos.data.filter((item) => item.id !== id),
+                        },
+                    },
+                    variables: {
+                        first: onPage,
+                    },
+                });
+            },
         });
     };
 
@@ -75,7 +99,7 @@ export default ({
                             row.done ? classes.itemDone : ""
                         }`}
                     >
-                        {row.title}
+                        {row.title} {row.id}
                     </label>
                 )}
             </TableCell>

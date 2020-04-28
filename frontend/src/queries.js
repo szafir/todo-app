@@ -16,13 +16,18 @@ export const DELETE_TODO = gql`
 `;
 export const CREATE_TODO = gql`
     mutation createTodo($title: String!) {
-        createTodo(title: $title)
+        createTodo(title: $title) {
+            id
+            done
+            title
+            createdAt
+        }
     }
 `;
 
 export const TODOS = gql`
-    query getTodos($page: Int) {
-        todos(page: $page) {
+    query getTodos($first: Int, $skip: Int, $filter: String) {
+        todos(first: $first, skip: $skip, filter: $filter) {
             data {
                 id
                 done

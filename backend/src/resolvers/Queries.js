@@ -3,10 +3,10 @@ const todos = async (_, args, { pool }) => {
     const countData = await pool.then((par) => par.query(countSql));
     const { count } = countData[0];
 
-    const { onPage, page } = args;
-    const sql = `SELECT * FROM todos order by createdAt desc limit ?,?`;
+    const { first, skip } = args;
+    const sql = `SELECT * FROM todos order by createdAt desc, id desc limit ?,?`;
     const data = await pool.then((par) =>
-        par.query(sql, [onPage * page, onPage])
+        par.query(sql, [skip, first])
     );
     return {
         data: [...data],

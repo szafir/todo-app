@@ -7,11 +7,6 @@ import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { ApolloProvider } from "@apollo/react-hooks";
 import fetch from "node-fetch";
 
-const client = new ApolloClient({
-    link: new HttpLink({ uri: process.env.RAZZLE_API_URL, fetch }),
-    cache: new InMemoryCache(),
-});
-
 const assets = require(process.env.RAZZLE_ASSETS_MANIFEST);
 
 const server = express();
@@ -20,6 +15,11 @@ server
     .disable("x-powered-by")
     .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
     .get("/*", (req, res) => {
+        const client = new ApolloClient({
+            link: new HttpLink({ uri: process.env.RAZZLE_API_URL, fetch }),
+            cache: new InMemoryCache(),
+        });
+
         const context = {};
         const markup = renderToString(
             <ApolloProvider client={client}>
@@ -28,6 +28,8 @@ server
                 </StaticRouter>
             </ApolloProvider>
         );
+
+        // console.log(markup);
 
         if (context.url) {
             res.redirect(context.url);
@@ -38,7 +40,7 @@ server
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta charset="utf-8" />
-        <title>Todo</title>
+        <title>Todo application</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         ${
             assets.client.css
@@ -53,6 +55,9 @@ server
     </head>
     <body>
         <div id="root">${markup}</div>
+        <script>
+            window.__APOLLO_STATE__ = ${JSON.stringify(client.extract())};
+        </script>
     </body>
 </html>`
             );
