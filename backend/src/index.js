@@ -18,7 +18,7 @@ const context = {
 const server = new GraphQLServer({
     typeDefs: `${__dirname}/schema.graphql`,
     resolvers,
-    context, 
+    context,
 });
 
 server.start({ playground: !process.env.PRODUCTION ? "/" : false }, () =>

@@ -54,6 +54,12 @@ export default function Home() {
         setCursor(cursor + 1);
     };
 
+    const showLoadMore =
+        data &&
+        data.todos &&
+        data.todos.count &&
+        data.todos.count !== data.todos.data.length;
+
     return (
         <>
             <AppBar position="static">
@@ -77,21 +83,23 @@ export default function Home() {
                 </div>
 
                 <Table
-                    items={(data && data.todos && data.todos.data)}
+                    items={data && data.todos && data.todos.data}
                     newMode={newMode}
                     setNewMode={setNewMode}
                     onPage={onPage}
-                    count={(data && data.todos && data.todos.count)}
+                    count={data && data.todos && data.todos.count}
                 />
-                <div className={classes.tableHeader}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleLoadMore}
-                    >
-                        Load more
-                    </Button>
-                </div>
+                {showLoadMore && (
+                    <div className={classes.tableHeader}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleLoadMore}
+                        >
+                            Load more
+                        </Button>
+                    </div>
+                )}
             </Container>
         </>
     );

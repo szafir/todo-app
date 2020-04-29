@@ -6,6 +6,7 @@ import { renderToString } from "react-dom/server";
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { ApolloProvider } from "@apollo/react-hooks";
 import fetch from "node-fetch";
+import { getDataFromTree } from "@apollo/react-ssr";
 
 const assets = require(process.env.RAZZLE_ASSETS_MANIFEST);
 
@@ -14,11 +15,25 @@ const server = express();
 server
     .disable("x-powered-by")
     .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
-    .get("/*", (req, res) => {
+    .get("/*", async (req, res) => {
         const client = new ApolloClient({
-            link: new HttpLink({ uri: process.env.RAZZLE_API_URL, fetch }),
+            link: new HttpLink({
+                uri:
+                    process.env.NODE_ENV === "development"
+                        ? process.env.RAZZLE_API_URL
+                        : process.env.RAZZLE_API_HOST,
+                fetch,
+            }),
             cache: new InMemoryCache(),
+            ssrMode: true,
         });
+        await getDataFromTree(
+            <ApolloProvider client={client}>
+                <StaticRouter context={context} location={req.url}>
+                    <App />
+                </StaticRouter>
+            </ApolloProvider>
+        );
 
         const context = {};
         const markup = renderToString(

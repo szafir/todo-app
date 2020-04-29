@@ -9,6 +9,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { DELETE_TODO, UPDATE_TODO, CREATE_TODO } from "../queries";
 
 import { createTodoLogic, deleteTodoLogic } from "../logic/TodoLogic";
+import { NoSsr } from "@material-ui/core";
 
 const useStyles = makeStyles({
     itemDone: {
@@ -72,17 +73,18 @@ export default ({ row, setNewMode = () => {}, onPage }) => {
     return (
         <TableRow>
             <TableCell scope="row" width="15">
-                <Checkbox
-                    defaultChecked={row.done}
-                    color="primary"
-                    onClick={handleDone}
-                />
+                <NoSsr>
+                    <Checkbox
+                        defaultChecked={row.done}
+                        color="primary"
+                        onClick={handleDone}
+                    />
+                </NoSsr>
             </TableCell>
             <TableCell scope="row" onClick={handleEditMode}>
                 {isEditMode && (
                     <TextField
                         autoFocus
-                        id="outlined-basic"
                         value={textField}
                         variant="outlined"
                         size="small"

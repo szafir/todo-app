@@ -34,7 +34,9 @@ export default ({ items = [], newMode, setNewMode, count = 0, onPage }) => {
                         </TableRow>
                     )}
                 </TableBody>
-                <Footer count={count} itemsAmount={items.length} />
+                {count > 0 && (
+                    <Footer count={count} itemsAmount={items.length} />
+                )}
             </Table>
         </TableContainer>
     );

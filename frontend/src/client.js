@@ -7,8 +7,9 @@ import { ApolloProvider } from "@apollo/react-hooks";
 
 const client = new ApolloClient({
     link: new HttpLink({ uri: process.env.RAZZLE_API_URL, fetch }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
 });
+
 
 hydrate(
     <ApolloProvider client={client}>
