@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
@@ -6,7 +6,9 @@ import Checkbox from "@material-ui/core/Checkbox";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useMutation } from "@apollo/react-hooks";
-import { TODOS, DELETE_TODO } from "../queries";
+import { DELETE_TODO, UPDATE_TODO, CREATE_TODO } from "../queries";
+
+import { createTodoLogic, deleteTodoLogic } from "../logic/TodoLogic";
 
 const useStyles = makeStyles({
     itemDone: {
@@ -19,71 +21,69 @@ const useStyles = makeStyles({
     },
 });
 
-export default ({
-    row,
-    editModeId,
-    editModeText,
-    handleDone,
-    handleEditMode,
-    handleEditModeTextChange,
-    handleEditModeTextKeyDown,
-    handleEditModeTextBlur,
-    onPage,
-}) => {
+export default ({ row, setNewMode = () => {}, onPage }) => {
     const classes = useStyles();
+    const [isEditMode, setIsEditMode] = useState(row.id === -1);
+    const [textField, setTextField] = useState(row.title || "");
+
     const [deleteTodo] = useMutation(DELETE_TODO);
+    const [updateTodo] = useMutation(UPDATE_TODO);
+    const [createTodo] = useMutation(CREATE_TODO);
 
-    const handleDelete = (id) => {
-        deleteTodo({
+    const handleDone = () => {
+        updateTodo({
             variables: {
-                id,
-            },
-            update: (cache, response) => {
-                if (!response.data.deleteTodo) {
-                    return;
-                }
-
-                const { todos } = cache.readQuery({
-                    query: TODOS,
-                    variables: {
-                        first: onPage,
-                    },
-                });
-
-                cache.writeQuery({
-                    query: TODOS,
-                    data: {
-                        todos: {
-                            count: todos.count - 1,
-                            data: todos.data.filter((item) => item.id !== id),
-                        },
-                    },
-                    variables: {
-                        first: onPage,
-                    },
-                });
+                id: row.id,
+                done: !row.done,
             },
         });
     };
+    const handleDelete = () => {
+        deleteTodo(deleteTodoLogic({ id: row.id, onPage }));
+    };
 
+    const handleEditModeTextChange = (event) => {
+        setTextField(event.target.value);
+    };
+
+    const handleEditModeTextKeyDown = (event) => {
+        if (event.keyCode === 13) {
+            handleEditModeTextBlur();
+        }
+    };
+
+    const handleEditModeTextBlur = () => {
+        setIsEditMode(false);
+        if (row.id === -1) {
+            createTodo(createTodoLogic({ title: textField, onPage }));
+            setNewMode(false);
+        } else {
+            updateTodo({
+                variables: {
+                    id: row.id,
+                    title: textField,
+                },
+            });
+        }
+    };
+    const handleEditMode = () => {
+        setIsEditMode(true);
+    };
     return (
         <TableRow>
             <TableCell scope="row" width="15">
                 <Checkbox
                     defaultChecked={row.done}
                     color="primary"
-                    onClick={() => handleDone(row.id, row.done)}
+                    onClick={handleDone}
                 />
             </TableCell>
-            <TableCell
-                scope="row"
-                onClick={() => handleEditMode(row.id, row.title)}
-            >
-                {editModeId === row.id && (
+            <TableCell scope="row" onClick={handleEditMode}>
+                {isEditMode && (
                     <TextField
                         autoFocus
                         id="outlined-basic"
-                        value={editModeText}
+                        value={textField}
                         variant="outlined"
                         size="small"
                         fullWidth
@@ -93,13 +93,13 @@ export default ({
                         onBlur={handleEditModeTextBlur}
                     />
                 )}
-                {editModeId !== row.id && (
+                {!isEditMode && (
                     <label
                         className={`${classes.itemLabel} ${
                             row.done ? classes.itemDone : ""
                         }`}
                     >
-                        {row.title} {row.id}
+                        {textField}
                     </label>
                 )}
             </TableCell>
@@ -110,7 +110,7 @@ export default ({
                         size="small"
                         color="secondary"
                         variant="contained"
-                        onClick={() => handleDelete(row.id)}
+                        onClick={handleDelete}
                         role="button"
                     >
                         Delete

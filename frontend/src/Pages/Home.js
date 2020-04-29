@@ -8,6 +8,7 @@ import Table from "../compnents/Table";
 import Container from "@material-ui/core/Container";
 import { useQuery } from "@apollo/react-hooks";
 import { TODOS } from "../queries";
+import { fetchMoreLogic } from "../logic/TodoLogic";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 const onPage = 5;
 
-export default () => {
+export default function Home() {
     const classes = useStyles();
     const [cursor, setCursor] = useState(0);
 
@@ -45,32 +46,14 @@ export default () => {
 
     useEffect(() => {
         if (cursor > 0) {
-            fetchMore({
-                variables: {
-                    first: onPage,
-                    skip: data.todos.data.length,
-                },
-                updateQuery: (prevResult, { fetchMoreResult }) => {
-                    if (!fetchMoreResult) return prevResult;
-                    const newResult = {
-                        todos: {
-                            count: fetchMoreResult.todos.count,
-                            data: [
-                                ...prevResult.todos.data,
-                                ...fetchMoreResult.todos.data,
-                            ],
-                        },
-                    };
-
-                    return newResult;
-                },
-            });
+            fetchMore(fetchMoreLogic({ onPage, data }));
         }
     }, [cursor]);
 
     const handleLoadMore = () => {
         setCursor(cursor + 1);
     };
+
     return (
         <>
             <AppBar position="static">
@@ -94,11 +77,11 @@ export default () => {
                 </div>
 
                 <Table
-                    items={(data && data.todos && data.todos.data) || []}
+                    items={(data && data.todos && data.todos.data)}
                     newMode={newMode}
                     setNewMode={setNewMode}
                     onPage={onPage}
-                    count={(data && data.todos && data.todos.count) || 0}
+                    count={(data && data.todos && data.todos.count)}
                 />
                 <div className={classes.tableHeader}>
                     <Button
@@ -112,4 +95,4 @@ export default () => {
             </Container>
         </>
     );
-};
+}

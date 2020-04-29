@@ -29,8 +29,6 @@ server
             </ApolloProvider>
         );
 
-        // console.log(markup);
-
         if (context.url) {
             res.redirect(context.url);
         } else {
