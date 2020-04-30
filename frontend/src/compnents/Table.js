@@ -9,35 +9,35 @@ import Paper from "@material-ui/core/Paper";
 import Footer from "./Footer";
 import Row from "./Row";
 
-export default ({ items = [], newMode, setNewMode, count = 0, onPage }) => {
-    return (
-        <TableContainer component={Paper}>
-            <Table>
-                <TableBody>
-                    {newMode && (
-                        <Row
-                            row={{ done: false, id: -1 }}
-                            onPage={onPage}
-                            setNewMode={setNewMode}
-                        />
-                    )}
-                    {items.map((row) => (
-                        <Row
-                            row={row}
-                            onPage={onPage}
-                            key={`${row.id}-${row.title}`}
-                        />
-                    ))}
-                    {count === 0 && !newMode && (
-                        <TableRow key="no-items">
-                            <TableCell colSpan={6}>No items</TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-                {count > 0 && (
-                    <Footer count={count} itemsAmount={items.length} />
+export default ({ items = [], newMode, setNewMode, count = 0, onPage }) => (
+    <TableContainer component={Paper}>
+        <Table>
+            <TableBody>
+                {newMode && (
+                    <Row
+                        row={{
+                            done: false, id: -1,
+                        }}
+                        onPage={onPage}
+                        setNewMode={setNewMode}
+                    />
                 )}
-            </Table>
-        </TableContainer>
-    );
-};
+                {items.map((row) => (
+                    <Row
+                        row={row}
+                        onPage={onPage}
+                        key={`${row.id}-${row.title}`}
+                    />
+                ))}
+                {count === 0 && !newMode && (
+                    <TableRow key="no-items">
+                        <TableCell colSpan={6}>No items</TableCell>
+                    </TableRow>
+                )}
+            </TableBody>
+            {count > 0 && (
+                <Footer count={count} itemsAmount={items.length} />
+            )}
+        </Table>
+    </TableContainer>
+);

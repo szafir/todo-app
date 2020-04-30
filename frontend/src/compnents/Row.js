@@ -6,10 +6,9 @@ import Checkbox from "@material-ui/core/Checkbox";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useMutation } from "@apollo/react-hooks";
-import { DELETE_TODO, UPDATE_TODO, CREATE_TODO } from "../queries";
-
-import { createTodoLogic, deleteTodoLogic } from "../logic/TodoLogic";
 import { NoSsr } from "@material-ui/core";
+import { DELETE_TODO, UPDATE_TODO, CREATE_TODO } from "../queries";
+import { createTodoLogic, deleteTodoLogic } from "../logic/TodoLogic";
 
 const useStyles = makeStyles({
     itemDone: {
@@ -40,23 +39,26 @@ export default ({ row, setNewMode = () => {}, onPage }) => {
         });
     };
     const handleDelete = () => {
-        deleteTodo(deleteTodoLogic({ id: row.id, onPage }));
+        deleteTodo(
+            deleteTodoLogic({
+                id: row.id,
+                onPage,
+            }),
+        );
     };
-
     const handleEditModeTextChange = (event) => {
         setTextField(event.target.value);
-    };
-
-    const handleEditModeTextKeyDown = (event) => {
-        if (event.keyCode === 13) {
-            handleEditModeTextBlur();
-        }
     };
 
     const handleEditModeTextBlur = () => {
         setIsEditMode(false);
         if (row.id === -1) {
-            createTodo(createTodoLogic({ title: textField, onPage }));
+            createTodo(
+                createTodoLogic({
+                    title: textField,
+                    onPage,
+                }),
+            );
             setNewMode(false);
         } else {
             updateTodo({
@@ -65,6 +67,11 @@ export default ({ row, setNewMode = () => {}, onPage }) => {
                     title: textField,
                 },
             });
+        }
+    };
+    const handleEditModeTextKeyDown = (event) => {
+        if (event.keyCode === 13) {
+            handleEditModeTextBlur();
         }
     };
     const handleEditMode = () => {
@@ -96,13 +103,13 @@ export default ({ row, setNewMode = () => {}, onPage }) => {
                     />
                 )}
                 {!isEditMode && (
-                    <label
+                    <span
                         className={`${classes.itemLabel} ${
                             row.done ? classes.itemDone : ""
                         }`}
                     >
                         {textField}
-                    </label>
+                    </span>
                 )}
             </TableCell>
 

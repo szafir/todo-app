@@ -4,9 +4,9 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import Table from "../compnents/Table";
 import Container from "@material-ui/core/Container";
 import { useQuery } from "@apollo/react-hooks";
+import Table from "../compnents/Table";
 import { TODOS } from "../queries";
 import { fetchMoreLogic } from "../logic/TodoLogic";
 
@@ -20,7 +20,8 @@ const useStyles = makeStyles((theme) => ({
     title: {
         flexGrow: 1,
     },
-    containerRoot: {},
+    containerRoot: {
+    },
     tableHeader: {
         justifyContent: "flex-end",
         display: "flex",
@@ -36,7 +37,9 @@ export default function Home() {
     const [cursor, setCursor] = useState(0);
 
     const { data, fetchMore } = useQuery(TODOS, {
-        variables: { first: onPage },
+        variables: {
+            first: onPage,
+        },
     });
 
     const [newMode, setNewMode] = useState(false);
@@ -46,7 +49,9 @@ export default function Home() {
 
     useEffect(() => {
         if (cursor > 0) {
-            fetchMore(fetchMoreLogic({ onPage, data }));
+            fetchMore(fetchMoreLogic({
+                onPage, data,
+            }));
         }
     }, [cursor]);
 
@@ -54,11 +59,10 @@ export default function Home() {
         setCursor(cursor + 1);
     };
 
-    const showLoadMore =
-        data &&
-        data.todos &&
-        data.todos.count &&
-        data.todos.count !== data.todos.data.length;
+    const showLoadMore = data
+        && data.todos
+        && data.todos.count
+        && data.todos.count !== data.todos.data.length;
 
     return (
         <>
@@ -70,7 +74,9 @@ export default function Home() {
             <Container
                 component="main"
                 maxWidth="md"
-                classes={{ root: classes.containerRoot }}
+                classes={{
+                    root: classes.containerRoot,
+                }}
             >
                 <div className={classes.tableHeader}>
                     <Button
