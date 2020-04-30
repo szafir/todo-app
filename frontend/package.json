@@ -1,33 +1,48 @@
 {
-  "name": "todo-app-frontend",
-  "version": "0.1.0",
-  "license": "MIT",
-  "scripts": {
-    "start": "razzle start",
-    "build": "razzle build",
-    "test": "DEBUG=jest razzle test --env=jsdom",
-    "start:prod": "NODE_ENV=production node build/server.js"
-  },
-  "dependencies": {
-    "@apollo/client": "^3.0.0-beta.43",
-    "@apollo/react-hooks": "^3.1.5",
-    "@apollo/react-ssr": "^3.1.5",
-    "@material-ui/core": "^4.9.11",
-    "@material-ui/icons": "^4.9.1",
-    "apollo-cache-inmemory": "^1.6.5",
-    "apollo-client": "^2.6.8",
-    "express": "^4.17.1",
-    "graphql": "^15.0.0",
-    "node-fetch": "^2.6.0",
-    "query-string": "^6.12.1",
-    "razzle": "^3.0.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-router-dom": "^5.1.2"
-  },
-  "devDependencies": {
-    "@apollo/react-testing": "^3.1.4",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2"
-  }
+    "name": "todo-app-frontend",
+    "version": "0.1.0",
+    "license": "MIT",
+    "scripts": {
+        "start": "razzle start",
+        "build": "razzle build",
+        "test": "razzle test --env=jsdom ./",
+        "start:prod": "NODE_ENV=production node build/server.js",
+        "lint": "eslint src/**/*.js"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "yarn lint"
+        }
+    },
+    "dependencies": {
+        "@apollo/client": "^3.0.0-beta.43",
+        "@apollo/react-hooks": "^3.1.5",
+        "@apollo/react-ssr": "^3.1.5",
+        "@material-ui/core": "^4.9.11",
+        "@material-ui/icons": "^4.9.1",
+        "apollo-cache-inmemory": "^1.6.5",
+        "apollo-client": "^2.6.8",
+        "express": "^4.17.1",
+        "graphql": "^15.0.0",
+        "node-fetch": "^2.6.0",
+        "query-string": "^6.12.1",
+        "razzle": "^3.0.0",
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1",
+        "react-router-dom": "^5.1.2"
+    },
+    "devDependencies": {
+        "@apollo/react-testing": "^3.1.4",
+        "@babel/core": "^7.9.6",
+        "@babel/preset-env": "^7.9.6",
+        "enzyme": "^3.11.0",
+        "enzyme-adapter-react-16": "^1.15.2",
+        "eslint": "^6.8.0",
+        "eslint-config-airbnb": "^18.1.0",
+        "eslint-plugin-import": "^2.20.2",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-react": "^7.19.0",
+        "eslint-plugin-react-hooks": "^2.5.1",
+        "husky": "^4.2.5"
+    }
 }
