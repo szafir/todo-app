@@ -6,7 +6,7 @@
     "dependencies": {
         "dotenv": "^8.2.0",
         "graphql-yoga": "1.18.3",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.19",
         "mysql": "^2.18.1",
         "promise-mysql": "^4.1.3"
     },
